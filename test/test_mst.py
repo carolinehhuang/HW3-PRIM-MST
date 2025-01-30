@@ -35,6 +35,30 @@ def check_mst(adj_mat: np.ndarray,
             total += mst[i, j]
     assert approx_equal(total, expected_weight), 'Proposed MST has incorrect expected weight'
 
+    def check_connected(adj_matrix, start):
+        nodes = len(adj_matrix)
+        visited = []
+
+        stack = [start]
+        #implement dfs to check all reachable nodes from any nodes. if the graph is fully connected, the length of the visited nodes will be the same as the total amount of nodes
+        while stack:
+            current = stack.pop()
+            if current not in visited:
+                visited.append(current) #append the current node onto the stack
+                for neighbor in range(nodes): #traverse through the neighbors
+                    if adj_matrix[current][neighbor] != 0 and neighbor not in visited:
+                        stack.append(neighbor)
+
+        return len(visited)
+
+    dfs = check_connected(adj_mat, 0)
+    assert dfs == len(adj_mat), "Graph is not connected" #check if the number of nodes from dfs is equal to the total amount of nodes
+
+    assert len(mst) == len(adj_mat)  # check if the number of nodes in mst matches number of nodes in adjacency matrix
+    assert len(adj_mat) == (np.count_nonzero(mst) / 2) + 1  # check if number of nodes-1 equals to number of connections or in other words, number of nodes is number of edges in mst + 1
+
+
+
 
 def test_mst_small():
     """
@@ -69,6 +93,23 @@ def test_mst_student():
     """
     
     TODO: Write at least one unit test for MST construction.
-    
+
     """
-    pass
+    adj_matrix_unconnected = [
+    [0, 5, 0, 0],  # Node 0 is connected to Node 1
+    [5, 0, 0, 0],  # Node 1 is connected to Node 0
+    [0, 0, 0, 10],  # Node 2 is connected to Node 3
+    [0, 0, 10, 0]   # Node 3 is connected to Node 2
+]
+    g = Graph(np.array(adj_matrix_unconnected))
+    g.construct_mst()
+
+    with pytest.raises(AssertionError, match = 'Proposed MST has incorrect expected weight'):
+        check_mst(g.adj_mat, g.mst, 15)
+
+    #function would also error at the check_connected step, but fails first at the expected weight due to being unconnected
+
+
+
+
+
