@@ -11,7 +11,7 @@ pythonpath = [
 ]
 
 [project]
-name = "prims_algorithm"
+name = "mst"
 authors = [{name = "Caroline Huang", email = "caroline.huang2@ucsf.edu"}]
 readme = "README.md"
 license = {file = "LICENSE"}
